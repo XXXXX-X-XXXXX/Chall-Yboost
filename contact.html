@@ -1,0 +1,27 @@
+<section class="page" id="page-contact">
+ 
+  <div class="contact-wrap">
+    <h2>Contact</h2>
+    <p>Une question, une suggestion ou un problème ? Écrivez-nous.</p>
+ 
+    <div class="form-group">
+      <label for="c-name">Nom</label>
+      <input type="text" id="c-name" placeholder="Votre nom" />
+    </div>
+    <div class="form-group">
+      <label for="c-email">Adresse e-mail</label>
+      <input type="email" id="c-email" placeholder="vous@example.com" />
+    </div>
+    <div class="form-group">
+      <label for="c-msg">Message</label>
+      <textarea id="c-msg" rows="5" placeholder="Décrivez votre demande..."></textarea>
+    </div>
+ 
+    <button class="btn-primary" onclick="sendContact()" id="btn-contact">Envoyer</button>
+ 
+    <div class="form-success" id="contact-success">
+      Message envoyé — nous vous répondrons sous 48 h.
+    </div>
+  </div>
+ 
+</section>
