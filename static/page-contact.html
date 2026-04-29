@@ -1,9 +1,18 @@
-<section class="page" id="page-contact">
- 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nomade — Contact</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main>
   <div class="contact-wrap">
     <h2>Contact</h2>
     <p>Une question, une suggestion ou un problème ? Écrivez-nous.</p>
- 
+
     <div class="form-group">
       <label for="c-name">Nom</label>
       <input type="text" id="c-name" placeholder="Votre nom" />
@@ -16,12 +25,44 @@
       <label for="c-msg">Message</label>
       <textarea id="c-msg" rows="5" placeholder="Décrivez votre demande..."></textarea>
     </div>
- 
+
     <button class="btn-primary" onclick="sendContact()" id="btn-contact">Envoyer</button>
- 
+
     <div class="form-success" id="contact-success">
       Message envoyé — nous vous répondrons sous 48 h.
     </div>
   </div>
- 
-</section>
+</main>
+
+<script src="shared.js"></script>
+<script>
+function sendContact() {
+  const name  = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const msg   = document.getElementById('c-msg').value.trim();
+  const btn   = document.getElementById('btn-contact');
+
+  if (!name || !email || !msg) {
+    btn.textContent = 'Remplissez tous les champs';
+    btn.style.background = '#c0392b';
+    setTimeout(() => { btn.textContent = 'Envoyer'; btn.style.background = ''; }, 1800);
+    return;
+  }
+
+  btn.textContent = '…';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.textContent = 'Envoyer';
+    btn.disabled = false;
+    document.getElementById('c-name').value  = '';
+    document.getElementById('c-email').value = '';
+    document.getElementById('c-msg').value   = '';
+    const s = document.getElementById('contact-success');
+    s.style.display = 'block';
+    setTimeout(() => s.style.display = 'none', 4000);
+  }, 900);
+}
+</script>
+</body>
+</html>

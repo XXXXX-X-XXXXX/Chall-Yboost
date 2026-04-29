@@ -1,10 +1,23 @@
-<section class="page" id="page-about">
- 
-  <div class="about-wrap">
-    <h2>À propos de nous </h2>
-    <p>salut</p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nomade — En savoir plus</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
- 
+<main>
+  <div class="about-wrap">
+    <h2>À propos de Nomade</h2>
+
+    <p>Nomade est né d'un constat simple : la plupart des outils en ligne sont trop compliqués, trop bruyants, ou trop intrusifs. Nous avons voulu construire autre chose.</p>
+
+    <p>Depuis 2021, nous développons une plateforme sobre et fonctionnelle, conçue pour durer. Pas de fonctionnalités gadgets, pas de dark patterns. Juste ce dont vous avez besoin, bien fait.</p>
+
+    <p>Notre équipe est petite et indépendante. Nous ne répondons qu'à nos utilisateurs — pas à des investisseurs.</p>
+
     <div class="about-stats">
       <div class="stat">
         <span class="stat-number">12 k</span>
@@ -19,14 +32,18 @@
         <span class="stat-label">En service</span>
       </div>
     </div>
- 
+
     <p>Nous croyons que le web peut être à la fois simple et beau. Que la sécurité ne devrait pas être une option payante. Et qu'un produit bien conçu n'a pas besoin de vous manipuler pour vous garder.</p>
+
     <p>Si ces valeurs vous parlent, rejoignez-nous.</p>
- 
-    <div style="margin-top: 2.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-      <button class="btn-primary" onclick="openModal('signup')">Rejoindre Nomade</button>
-      <button class="btn-secondary" onclick="showPage('contact')">Nous contacter</button>
+
+    <div class="about-actions">
+      <button class="btn-primary" onclick="openModal()">Rejoindre Nomade</button>
+      <button class="btn-secondary" onclick="location.href='contact.html'">Nous contacter</button>
     </div>
   </div>
- 
-</section>
+</main>
+
+<script src="shared.js"></script>
+</body>
+</html>

@@ -1,49 +1,179 @@
+// ══════════════════════════════════════════════════════
+//  shared.js  —  Nav + Modal injectés sur chaque page
+// ══════════════════════════════════════════════════════
 
-function showPage(name) {
-  // Masque toutes les pages
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+// Détecte la page active d'après le nom du fichier
+const currentPage = location.pathname.split('/').pop() || 'index.html';
+const navActive = {
+  'index.html':   'nav-home',
+  'about.html':   'nav-about',
+  'contact.html': 'nav-contact',
+};
 
-  // Active la bonne page
-  document.getElementById('page-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
+// ── Injection du HTML partagé ──────────────────────
+document.body.insertAdjacentHTML('afterbegin', `
+<nav>
+  <a href="index.html" class="nav-logo">Nomade</a>
+  <ul class="nav-links">
+    <li><a href="index.html"   id="nav-home">Accueil</a></li>
+    <li><a href="about.html"   id="nav-about">En savoir plus</a></li>
+    <li><a href="contact.html" id="nav-contact">Contact</a></li>
+    <li><a href="#" class="btn-nav" onclick="openModal(); return false;">Se connecter</a></li>
+  </ul>
+</nav>
+`);
 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  return false;
+document.body.insertAdjacentHTML('beforeend', `
+<footer>
+  © 2025 Nomade — <a href="contact.html">Contact</a>
+</footer>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-box">
+
+    <button class="modal-close" onclick="closeModal()" aria-label="Fermer">✕</button>
+
+    <!-- Écran 1 : choix -->
+    <div class="modal-home" id="modal-home">
+      <p class="modal-home-title">Nomade</p>
+      <p class="modal-home-sub">Connectez-vous ou créez un compte</p>
+      <div class="modal-home-btns">
+        <button class="btn-modal-choice btn-modal-login"  onclick="expandTo('login')">Se connecter</button>
+        <button class="btn-modal-choice btn-modal-signup" onclick="expandTo('signup')">Créer un compte</button>
+      </div>
+    </div>
+
+    <!-- Écran 2 : connexion -->
+    <div class="modal-form-wrap" id="wrap-login">
+      <div class="modal-form-header">
+        <button class="btn-back" onclick="collapseToHome()">←</button>
+        <span class="modal-form-title">Connexion</span>
+      </div>
+      <div class="modal-field">
+        <label for="l-user">Nom d'utilisateur</label>
+        <input type="text" id="l-user" placeholder="ex : alice" autocomplete="username" />
+      </div>
+      <div class="modal-field">
+        <label for="l-pass">Mot de passe</label>
+        <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <div class="modal-error" id="login-error"></div>
+      <button class="btn-modal-submit" id="btn-login" onclick="doLogin()">Se connecter</button>
+    </div>
+
+    <!-- Écran 3 : inscription -->
+    <div class="modal-form-wrap" id="wrap-signup">
+      <div class="modal-form-header">
+        <button class="btn-back" onclick="collapseToHome()">←</button>
+        <span class="modal-form-title">Créer un compte</span>
+      </div>
+      <div class="modal-field">
+        <label for="s-user">Nom d'utilisateur</label>
+        <input type="text" id="s-user" placeholder="ex : alice" autocomplete="username" />
+      </div>
+      <div class="modal-field">
+        <label for="s-email">Adresse e-mail</label>
+        <input type="email" id="s-email" placeholder="vous@example.com" autocomplete="email" />
+      </div>
+      <div class="modal-field">
+        <label for="s-pass">Mot de passe</label>
+        <input type="password" id="s-pass" placeholder="Aa1@••••" autocomplete="new-password" oninput="updatePwRules()" />
+        <div class="pw-rules">
+          <span class="pw-rule" id="r-upper">Majuscule</span>
+          <span class="pw-rule" id="r-lower">Minuscule</span>
+          <span class="pw-rule" id="r-digit">Chiffre</span>
+          <span class="pw-rule" id="r-special">Spécial</span>
+        </div>
+      </div>
+      <div class="modal-error" id="signup-error"></div>
+      <button class="btn-modal-submit" id="btn-signup" onclick="doSignup()">Créer le compte</button>
+    </div>
+
+    <!-- Succès -->
+    <div class="modal-success-msg" id="modal-success">
+      <span class="checkmark">✓</span>
+      <p id="modal-success-text">Bienvenue !</p>
+    </div>
+
+  </div>
+</div>
+`);
+
+// Marque le lien actif
+const activeId = navActive[currentPage];
+if (activeId) {
+  const el = document.getElementById(activeId);
+  if (el) el.classList.add('active');
 }
 
+// Fermeture en cliquant hors du carré
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
 
-function openModal(tab) {
-  switchTab(tab);
+// Fermeture Echap
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+
+// ══════════════════════════════════════
+//  MODAL : logique expand / collapse
+// ══════════════════════════════════════
+
+function openModal() {
   resetForms();
+  showScreen('home');
+  document.getElementById('modal-box').classList.remove('expanded-login','expanded-signup');
   document.getElementById('modal-overlay').classList.add('open');
-  // Focus sur le premier champ
-  setTimeout(() => {
-    const input = document.querySelector('#modal-overlay .modal-form.active input');
-    if (input) input.focus();
-  }, 200);
 }
 
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
-  resetForms();
+  setTimeout(resetForms, 300);
 }
 
-function closeModalOutside(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
+function showScreen(name) {
+  document.getElementById('modal-home').style.display     = name === 'home'    ? 'block' : 'none';
+  document.getElementById('wrap-login').classList.toggle('active',  name === 'login');
+  document.getElementById('wrap-signup').classList.toggle('active', name === 'signup');
+  document.getElementById('modal-success').style.display = name === 'success' ? 'block' : 'none';
 }
 
-function switchTab(tab) {
-  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
-  document.getElementById('form-login').classList.toggle('active', tab === 'login');
-  document.getElementById('form-signup').classList.toggle('active', tab === 'signup');
-  document.getElementById('modal-success').style.display = 'none';
-  clearErrors();
+function expandTo(type) {
+  const home = document.getElementById('modal-home');
+  home.style.transition = 'opacity 0.15s';
+  home.style.opacity = '0';
+  setTimeout(() => {
+    home.style.display = 'none';
+    home.style.opacity = '';
+    home.style.transition = '';
+    document.getElementById('modal-box').classList.add(type === 'login' ? 'expanded-login' : 'expanded-signup');
+    setTimeout(() => {
+      showScreen(type);
+      const input = document.querySelector(`#wrap-${type} input`);
+      if (input) input.focus();
+    }, 120);
+  }, 150);
+}
+
+function collapseToHome() {
+  const wrap = document.querySelector('.modal-form-wrap.active');
+  if (!wrap) return;
+  wrap.style.transition = 'opacity 0.15s';
+  wrap.style.opacity = '0';
+  setTimeout(() => {
+    wrap.style.opacity = '';
+    wrap.style.transition = '';
+    wrap.classList.remove('active');
+    document.getElementById('modal-box').classList.remove('expanded-login','expanded-signup');
+    clearErrors();
+    document.getElementById('modal-home').style.display = 'block';
+  }, 150);
 }
 
 function resetForms() {
-  ['l-user','l-pass','s-user','s-pass'].forEach(id => {
+  ['l-user','l-pass','s-user','s-email','s-pass'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -53,22 +183,16 @@ function resetForms() {
 }
 
 function clearErrors() {
-  document.getElementById('login-error').textContent = '';
+  document.getElementById('login-error').textContent  = '';
   document.getElementById('signup-error').textContent = '';
 }
 
-// Fermeture avec Echap
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-});
 
+// ══════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════
 
-
-const users = {
-  alice: 'Alice123!',
-  bob:   'Bob456@',
-  admin: 'Admin789#'
-};
+const users = { alice: 'Alice123!', bob: 'Bob456@', admin: 'Admin789#' };
 
 function doLogin() {
   const username = document.getElementById('l-user').value.trim().toLowerCase();
@@ -77,31 +201,23 @@ function doLogin() {
   const btn      = document.getElementById('btn-login');
 
   if (!username || !password) {
-    setError(errEl, 'Veuillez remplir tous les champs.');
-    shakeBtn(btn);
-    return;
+    errEl.textContent = 'Veuillez remplir tous les champs.';
+    shakeBtn(btn); return;
   }
 
-  // Animation de chargement
   btn.textContent = '…';
   btn.disabled = true;
 
   setTimeout(() => {
     btn.textContent = 'Se connecter';
     btn.disabled = false;
-
-    const knownUser = username in users;
-
-    if (!knownUser) {
-      // Username inconnu → message volontairement vague (mais différent — c'est la faille)
-      setError(errEl, 'Invalid credentials.');
+    if (!(username in users)) {
+      errEl.textContent = 'Invalid credentials.';
       shakeBtn(btn);
     } else if (users[username] !== password) {
-      // Username connu, mauvais mot de passe → message légèrement différent (faille user enumeration)
-      setError(errEl, 'Username or password incorrect.');
+      errEl.textContent = 'Username or password incorrect.';
       shakeBtn(btn);
     } else {
-      // Succès
       showSuccess('Connexion réussie. Bienvenue, ' + username + ' !');
     }
   }, 600);
@@ -113,149 +229,86 @@ function doSignup() {
   const errEl    = document.getElementById('signup-error');
   const btn      = document.getElementById('btn-signup');
 
-  if (!username) {
-    setError(errEl, 'Choisissez un nom d\'utilisateur.');
-    shakeBtn(btn);
-    return;
-  }
+  if (!username) { errEl.textContent = "Choisissez un nom d'utilisateur."; shakeBtn(btn); return; }
+  if (username in users) { errEl.textContent = 'Nom déjà pris.'; shakeBtn(btn); return; }
 
-  if (username in users) {
-    setError(errEl, 'Ce nom d\'utilisateur est déjà pris.');
-    shakeBtn(btn);
-    return;
-  }
+  const pwErr = validatePassword(password);
+  if (pwErr) { errEl.textContent = pwErr; shakeBtn(btn); return; }
 
-  // Validation mot de passe
-  const pwErrors = validatePassword(password);
-  if (pwErrors.length > 0) {
-    setError(errEl, pwErrors[0]);
-    shakeBtn(btn);
-    return;
-  }
-
-  // Animation chargement
   btn.textContent = '…';
   btn.disabled = true;
-
   setTimeout(() => {
     btn.textContent = 'Créer le compte';
     btn.disabled = false;
-
-    // Enregistrement (en mémoire seulement)
     users[username] = password;
     showSuccess('Compte créé ! Bienvenue, ' + username + ' 🎉');
   }, 700);
 }
 
 function validatePassword(pw) {
-  const errors = [];
-  if (!/[A-Z]/.test(pw)) errors.push('Le mot de passe doit contenir au moins une majuscule.');
-  if (!/[a-z]/.test(pw)) errors.push('Le mot de passe doit contenir au moins une minuscule.');
-  if (!/[0-9]/.test(pw)) errors.push('Le mot de passe doit contenir au moins un chiffre.');
-  if (!/[^A-Za-z0-9]/.test(pw)) errors.push('Le mot de passe doit contenir au moins un caractère spécial (!@#$%...).');
-  return errors;
+  if (!/[A-Z]/.test(pw)) return 'Ajoutez au moins une majuscule.';
+  if (!/[a-z]/.test(pw)) return 'Ajoutez au moins une minuscule.';
+  if (!/[0-9]/.test(pw)) return 'Ajoutez au moins un chiffre.';
+  if (!/[^A-Za-z0-9]/.test(pw)) return 'Ajoutez au moins un caractère spécial (!@#...).';
+  return null;
 }
 
 function updatePwRules() {
   const pw = document.getElementById('s-pass').value;
-  setRule('r-upper',   /[A-Z]/.test(pw));
-  setRule('r-lower',   /[a-z]/.test(pw));
-  setRule('r-digit',   /[0-9]/.test(pw));
-  setRule('r-special', /[^A-Za-z0-9]/.test(pw));
-}
-
-function setRule(id, ok) {
-  document.getElementById(id).classList.toggle('ok', ok);
-}
-
-function setError(el, msg) {
-  el.textContent = msg;
+  const set = (id, ok) => document.getElementById(id).classList.toggle('ok', ok);
+  set('r-upper',   /[A-Z]/.test(pw));
+  set('r-lower',   /[a-z]/.test(pw));
+  set('r-digit',   /[0-9]/.test(pw));
+  set('r-special', /[^A-Za-z0-9]/.test(pw));
 }
 
 function showSuccess(msg) {
-  document.getElementById('form-login').classList.remove('active');
-  document.getElementById('form-signup').classList.remove('active');
-  const s = document.getElementById('modal-success');
+  const wrap = document.querySelector('.modal-form-wrap.active');
+  if (wrap) wrap.classList.remove('active');
   document.getElementById('modal-success-text').textContent = msg;
-  s.style.display = 'block';
-  // Fermeture auto après 2.5s
+  document.getElementById('modal-success').style.display = 'block';
   setTimeout(closeModal, 2500);
 }
 
 
-// Effet ripple sur tous les .btn-primary
-document.addEventListener('click', function(e) {
-  const btn = e.target.closest('.btn-primary');
+// ══════════════════════════════════════
+//  ANIMATIONS globales
+// ══════════════════════════════════════
+
+// Ripple sur .btn-primary et .btn-modal-submit
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.btn-primary, .btn-modal-submit');
   if (!btn) return;
-
-  const rect   = btn.getBoundingClientRect();
-  const size   = Math.max(rect.width, rect.height);
-  const x      = e.clientX - rect.left - size / 2;
-  const y      = e.clientY - rect.top  - size / 2;
-
-  const ripple = document.createElement('span');
-  ripple.className = 'ripple';
-  ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
-  btn.appendChild(ripple);
-
-  ripple.addEventListener('animationend', () => ripple.remove());
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const x = e.clientX - rect.left - size / 2;
+  const y = e.clientY - rect.top  - size / 2;
+  const r = document.createElement('span');
+  r.className = 'ripple';
+  r.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+  btn.appendChild(r);
+  r.addEventListener('animationend', () => r.remove());
 });
 
-// Shake sur erreur
+// Shake
 function shakeBtn(btn) {
-  btn.style.transition = 'transform 0.1s';
-  const steps = [6, -6, 4, -4, 2, -2, 0];
+  const steps = [6,-6,4,-4,2,-2,0];
   let i = 0;
-  const step = () => {
+  const go = () => {
     if (i >= steps.length) { btn.style.transform = ''; return; }
-    btn.style.transform = `translateX(${steps[i]}px)`;
-    i++;
-    setTimeout(step, 60);
+    btn.style.transform = `translateX(${steps[i++]}px)`;
+    setTimeout(go, 55);
   };
-  step();
+  go();
 }
 
-// Highlight hover sur les feature cards
+// Glow hover sur feature cards (si présentes)
 document.querySelectorAll('.feature-card').forEach(card => {
   card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width  * 100).toFixed(1);
-    const y = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1);
+    const r = card.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width  * 100).toFixed(1);
+    const y = ((e.clientY - r.top)  / r.height * 100).toFixed(1);
     card.style.background = `radial-gradient(circle at ${x}% ${y}%, #f0f7f4 0%, #fff 60%)`;
   });
-  card.addEventListener('mouseleave', () => {
-    card.style.background = '';
-  });
+  card.addEventListener('mouseleave', () => { card.style.background = ''; });
 });
-
-
-function sendContact() {
-  const name  = document.getElementById('c-name').value.trim();
-  const email = document.getElementById('c-email').value.trim();
-  const msg   = document.getElementById('c-msg').value.trim();
-  const btn   = document.getElementById('btn-contact');
-
-  if (!name || !email || !msg) {
-    btn.textContent = 'Remplissez tous les champs';
-    btn.style.background = '#c0392b';
-    setTimeout(() => {
-      btn.textContent = 'Envoyer';
-      btn.style.background = '';
-    }, 1800);
-    return;
-  }
-
-  btn.textContent = '…';
-  btn.disabled = true;
-
-  setTimeout(() => {
-    btn.textContent = 'Envoyer';
-    btn.disabled = false;
-    document.getElementById('c-name').value  = '';
-    document.getElementById('c-email').value = '';
-    document.getElementById('c-msg').value   = '';
-    const success = document.getElementById('contact-success');
-    success.style.display = 'block';
-    setTimeout(() => success.style.display = 'none', 4000);
-  }, 900);
-}
