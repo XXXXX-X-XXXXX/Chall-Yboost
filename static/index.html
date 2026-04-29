@@ -65,6 +65,34 @@
                 <button class="btn-back" id="backToHome">←</button>
                 <h2 class="modal-form-title">Connexion</h2>
             </div>
+            <div class="modal-form-wrap" id="signupFormWrap">
+    <div class="modal-form-header">
+        <button class="btn-back" id="backToHomeFromSignup">←</button>
+        <h2 class="modal-form-title">Créer un compte</h2>
+    </div>
+    
+    <form action="/register" method="POST">
+        <div class="modal-field">
+            <label>Nom complet</label>
+            <input type="text" name="fullname" placeholder="John Doe">
+        </div>
+        <div class="modal-field">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="john@example.com">
+        </div>
+        <div class="modal-field">
+            <label>Mot de passe</label>
+            <input type="password" name="password" placeholder="••••••••">
+        </div>
+        
+        <div class="pw-rules">
+            <span class="pw-rule">8+ caractères</span>
+            <span class="pw-rule">1 spécial</span>
+        </div>
+
+        <button type="submit" class="btn-modal-submit">S'inscrire</button>
+    </form>
+</div>
             <form action="/login" method="POST">
                 <div class="modal-field">
                     <label>Email ou Identifiant</label>
@@ -124,6 +152,26 @@
             homeView.style.display = 'block';
             modalBox.classList.remove('expanded-login');
         };
+        // --- Sélection des nouveaux éléments ---
+const btnGoToSignup = document.querySelector('.btn-modal-signup'); // Le bouton vert dans la modale
+const signupFormWrap = document.getElementById('signupFormWrap');
+const btnBackFromSignup = document.getElementById('backToHomeFromSignup');
+
+// --- Logique Inscription ---
+
+// Aller vers Inscription
+btnGoToSignup.onclick = () => {
+    modalHome.style.display = 'none';
+    signupFormWrap.classList.add('active');
+    modalBox.classList.add('expanded-signup'); // Utilise ta classe CSS spécifique
+};
+
+// Retour d'Inscription vers Accueil modale
+btnBackFromSignup.onclick = () => {
+    signupFormWrap.classList.remove('active');
+    modalHome.style.display = 'block';
+    modalBox.classList.remove('expanded-signup');
+};
     }
 </script>
 
