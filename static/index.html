@@ -120,6 +120,11 @@
     const homeView = document.getElementById('modalHome');
     const formView = document.getElementById('loginFormWrap');
 
+    const btnGoToSignup = document.querySelector('.btn-modal-signup'); // Le bouton vert dans la modale
+const signupFormWrap = document.getElementById('signupFormWrap');
+const btnBackFromSignup = document.getElementById('backToHomeFromSignup');
+
+
     // 2. Ouvrir la modale
     if (btnNav) {
         btnNav.onclick = () => {
@@ -153,11 +158,6 @@
             modalBox.classList.remove('expanded-login');
         };
         // --- Sélection des nouveaux éléments ---
-const btnGoToSignup = document.querySelector('.btn-modal-signup'); // Le bouton vert dans la modale
-const signupFormWrap = document.getElementById('signupFormWrap');
-const btnBackFromSignup = document.getElementById('backToHomeFromSignup');
-
-// --- Logique Inscription ---
 
 // Aller vers Inscription
 btnGoToSignup.onclick = () => {
