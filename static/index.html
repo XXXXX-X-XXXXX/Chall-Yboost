@@ -26,8 +26,8 @@
     <h1>Un espace pensé<br>pour <em>aller loin</em></h1>
     <p>Nomade vous accompagne dans chaque étape. Simple, honnête, sans superflu.</p>
     <div class="hero-actions">
-      <button class="btn-primary">Créer un compte</button>
-      <button class="btn-secondary">En savoir plus</button>
+      <button class="btn-primary" id="heroSignupBtn">Créer un compte</button>
+      <button class="btn-secondary" onclick="location.href='page-about.html'">En savoir plus</button>
     </div>
   </div>
 
@@ -56,43 +56,15 @@
             <p class="modal-home-sub">Connectez-vous pour accéder au panel.</p>
             <div class="modal-home-btns">
                 <button class="btn-modal-choice btn-modal-login" id="showLoginForm">Se connecter</button>
-                <button class="btn-modal-choice btn-modal-signup">Créer un compte</button>
+                <button class="btn-modal-choice btn-modal-signup" id="showSignupForm">Créer un compte</button>
             </div>
         </div>
 
         <div class="modal-form-wrap" id="loginFormWrap">
             <div class="modal-form-header">
-                <button class="btn-back" id="backToHome">←</button>
+                <button class="btn-back" id="backToHomeFromLogin">←</button>
                 <h2 class="modal-form-title">Connexion</h2>
             </div>
-            <div class="modal-form-wrap" id="signupFormWrap">
-    <div class="modal-form-header">
-        <button class="btn-back" id="backToHomeFromSignup">←</button>
-        <h2 class="modal-form-title">Créer un compte</h2>
-    </div>
-    
-    <form action="/register" method="POST">
-        <div class="modal-field">
-            <label>Nom complet</label>
-            <input type="text" name="fullname" placeholder="John Doe">
-        </div>
-        <div class="modal-field">
-            <label>Email</label>
-            <input type="email" name="email" placeholder="john@example.com">
-        </div>
-        <div class="modal-field">
-            <label>Mot de passe</label>
-            <input type="password" name="password" placeholder="••••••••">
-        </div>
-        
-        <div class="pw-rules">
-            <span class="pw-rule">8+ caractères</span>
-            <span class="pw-rule">1 spécial</span>
-        </div>
-
-        <button type="submit" class="btn-modal-submit">S'inscrire</button>
-    </form>
-</div>
             <form action="/login" method="POST">
                 <div class="modal-field">
                     <label>Email ou Identifiant</label>
@@ -105,75 +77,106 @@
                 <button type="submit" class="btn-modal-submit">Entrer</button>
             </form>
         </div>
+
+        <div class="modal-form-wrap" id="signupFormWrap">
+            <div class="modal-form-header">
+                <button class="btn-back" id="backToHomeFromSignup">←</button>
+                <h2 class="modal-form-title">Créer un compte</h2>
+            </div>
+            <form action="/register" method="POST">
+                <div class="modal-field">
+                    <label>Nom complet</label>
+                    <input type="text" name="fullname" placeholder="John Doe">
+                </div>
+                <div class="modal-field">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="john@example.com">
+                </div>
+                <div class="modal-field">
+                    <label>Mot de passe</label>
+                    <input type="password" name="password" placeholder="••••••••">
+                </div>
+                <div class="pw-rules">
+                    <span class="pw-rule">8+ caractères</span>
+                    <span class="pw-rule">1 spécial</span>
+                </div>
+                <button type="submit" class="btn-modal-submit">S'inscrire</button>
+            </form>
+        </div>
+
     </div>
 </div>
 
 <script>
-    // 1. On récupère tous les éléments
-    const btnNav = document.getElementById('loginBtn'); 
-    const overlay = document.getElementById('modalOverlay');
-    const btnClose = document.getElementById('closeModal');
+    // Éléments principaux
+    const modalOverlay = document.getElementById('modalOverlay');
     const modalBox = document.getElementById('loginModal');
-    
-    const btnGoToForm = document.getElementById('showLoginForm');
-    const btnBack = document.getElementById('backToHome');
-    const homeView = document.getElementById('modalHome');
-    const formView = document.getElementById('loginFormWrap');
+    const loginBtnNav = document.getElementById('loginBtn');
+    const signupBtnHero = document.getElementById('heroSignupBtn');
+    const closeModal = document.getElementById('closeModal');
 
-    const btnGoToSignup = document.querySelector('.btn-modal-signup'); // Le bouton vert dans la modale
-const signupFormWrap = document.getElementById('signupFormWrap');
-const btnBackFromSignup = document.getElementById('backToHomeFromSignup');
+    // Vues (Wrappers)
+    const modalHome = document.getElementById('modalHome');
+    const loginFormWrap = document.getElementById('loginFormWrap');
+    const signupFormWrap = document.getElementById('signupFormWrap');
 
+    // Boutons de navigation interne
+    const showLoginForm = document.getElementById('showLoginForm');
+    const showSignupForm = document.getElementById('showSignupForm');
+    const backToHomeFromLogin = document.getElementById('backToHomeFromLogin');
+    const backToHomeFromSignup = document.getElementById('backToHomeFromSignup');
 
-    // 2. Ouvrir la modale
-    if (btnNav) {
-        btnNav.onclick = () => {
-            overlay.classList.add('open');
-        };
+    // --- FONCTIONS ---
+
+    function openModal(view = 'home') {
+        modalOverlay.classList.add('open');
+        resetViews();
+        if(view === 'home') {
+            modalHome.style.display = 'block';
+        } else if(view === 'signup') {
+            modalHome.style.display = 'none';
+            signupFormWrap.classList.add('active');
+            modalBox.classList.add('expanded-signup');
+        }
     }
 
-    // 3. Fermer la modale
-    if (btnClose) {
-        btnClose.onclick = () => overlay.classList.remove('open');
+    function resetViews() {
+        modalHome.style.display = 'block';
+        loginFormWrap.classList.remove('active');
+        signupFormWrap.classList.remove('active');
+        modalBox.classList.remove('expanded-login', 'expanded-signup');
     }
 
-    // Fermer si on clique sur le fond sombre
-    window.onclick = (e) => {
-        if (e.target == overlay) overlay.classList.remove('open');
+    // --- EVENEMENTS ---
+
+    // Ouvrir depuis la Nav (Accueil modale)
+    loginBtnNav.onclick = () => openModal('home');
+
+    // Ouvrir depuis le Hero (Directement inscription)
+    signupBtnHero.onclick = () => openModal('signup');
+
+    // Fermer
+    closeModal.onclick = () => modalOverlay.classList.remove('open');
+    window.onclick = (e) => { if (e.target == modalOverlay) modalOverlay.classList.remove('open'); };
+
+    // Aller vers Connexion
+    showLoginForm.onclick = () => {
+        modalHome.style.display = 'none';
+        loginFormWrap.classList.add('active');
+        modalBox.classList.add('expanded-login');
     };
 
-    // 4. Navigation interne à la modale
-    if (btnGoToForm) {
-        btnGoToForm.onclick = () => {
-            homeView.style.display = 'none';
-            formView.classList.add('active');
-            modalBox.classList.add('expanded-login');
-        };
-    }
+    // Aller vers Inscription
+    showSignupForm.onclick = () => {
+        modalHome.style.display = 'none';
+        signupFormWrap.classList.add('active');
+        modalBox.classList.add('expanded-signup');
+    };
 
-    if (btnBack) {
-        btnBack.onclick = () => {
-            formView.classList.remove('active');
-            homeView.style.display = 'block';
-            modalBox.classList.remove('expanded-login');
-        };
-        // --- Sélection des nouveaux éléments ---
+    // Retours
+    backToHomeFromLogin.onclick = resetViews;
+    backToHomeFromSignup.onclick = resetViews;
 
-// Aller vers Inscription
-btnGoToSignup.onclick = () => {
-    modalHome.style.display = 'none';
-    signupFormWrap.classList.add('active');
-    modalBox.classList.add('expanded-signup'); // Utilise ta classe CSS spécifique
-};
-
-// Retour d'Inscription vers Accueil modale
-btnBackFromSignup.onclick = () => {
-    signupFormWrap.classList.remove('active');
-    modalHome.style.display = 'block';
-    modalBox.classList.remove('expanded-signup');
-};
-    }
 </script>
-
 </body>
 </html>
