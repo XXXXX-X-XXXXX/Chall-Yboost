@@ -7,6 +7,55 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+    <nav>
+    <a href="index.html" class="nav-logo">VulnApp</a>
+
+    <ul class="nav-links">
+        <li><a href="index.html" class="active">Accueil</a></li>
+        <li><a href="page-about.html">À propos</a></li>
+        <li><a href="page-contact.html">Contact</a></li>
+    </ul>
+
+    <div class="nav-auth">
+        <button class="btn-primary btn-nav" id="loginBtn">Se connecter</button>
+    </div>
+</nav>
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="loginModal">
+        <button class="modal-close" id="closeModal">&times;</button>
+
+        <div class="modal-home" id="modalHome">
+            <h2 class="modal-home-title">Bienvenue</h2>
+            <p class="modal-home-sub">Connectez-vous pour accéder au panel.</p>
+            
+            <div class="modal-home-btns">
+                <button class="btn-modal-choice btn-modal-login" id="showLoginForm">Se connecter</button>
+                <button class="btn-modal-choice btn-modal-signup">Créer un compte</button>
+            </div>
+        </div>
+
+        <div class="modal-form-wrap" id="loginFormWrap">
+            <div class="modal-form-header">
+                <button class="btn-back" id="backToHome">←</button>
+                <h2 class="modal-form-title">Connexion</h2>
+            </div>
+            
+            <form action="/login" method="POST">
+                <div class="modal-field">
+                    <label>Email ou Identifiant</label>
+                    <input type="text" name="username" placeholder="admin@vulnapp.local" required>
+                </div>
+                <div class="modal-field">
+                    <label>Mot de passe</label>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
+                <div class="modal-error"></div> <button type="submit" class="btn-modal-submit">Entrer</button>
+            </form>
+        </div>
+    </div>
+</div>
+<main>
+    </main>
 
 <main>
   <div class="hero">

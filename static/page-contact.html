@@ -8,6 +8,21 @@
 </head>
 <body>
 
+  <nav>
+    <a href="index.html" class="nav-logo">VulnApp</a>
+
+    <ul class="nav-links">
+        <li><a href="index.html" class="active">Accueil</a></li>
+        <li><a href="page-about.html">À propos</a></li>
+        <li><a href="page-contact.html">Contact</a></li>
+    </ul>
+
+    <div class="nav-auth">
+        <button class="btn-primary btn-nav" id="loginBtn">Se connecter</button>
+    </div>
+</nav>
+
+
 <main>
   <div class="contact-wrap">
     <h2>Contact</h2>
@@ -35,34 +50,6 @@
 </main>
 
 <script src="shared.js"></script>
-<script>
-function sendContact() {
-  const name  = document.getElementById('c-name').value.trim();
-  const email = document.getElementById('c-email').value.trim();
-  const msg   = document.getElementById('c-msg').value.trim();
-  const btn   = document.getElementById('btn-contact');
 
-  if (!name || !email || !msg) {
-    btn.textContent = 'Remplissez tous les champs';
-    btn.style.background = '#c0392b';
-    setTimeout(() => { btn.textContent = 'Envoyer'; btn.style.background = ''; }, 1800);
-    return;
-  }
-
-  btn.textContent = '…';
-  btn.disabled = true;
-
-  setTimeout(() => {
-    btn.textContent = 'Envoyer';
-    btn.disabled = false;
-    document.getElementById('c-name').value  = '';
-    document.getElementById('c-email').value = '';
-    document.getElementById('c-msg').value   = '';
-    const s = document.getElementById('contact-success');
-    s.style.display = 'block';
-    setTimeout(() => s.style.display = 'none', 4000);
-  }, 900);
-}
-</script>
 </body>
 </html>

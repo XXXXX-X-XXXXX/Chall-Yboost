@@ -7,6 +7,20 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <nav>
+    <a href="index.html" class="nav-logo">VulnApp</a>
+
+    <ul class="nav-links">
+        <li><a href="index.html" class="active">Accueil</a></li>
+        <li><a href="page-about.html">À propos</a></li>
+        <li><a href="page-contact.html">Contact</a></li>
+    </ul>
+
+    <div class="nav-auth">
+        <button class="btn-primary btn-nav" id="loginBtn">Se connecter</button>
+    </div>
+</nav>
+
 
 <main>
   <div class="about-wrap">
@@ -39,7 +53,7 @@
 
     <div class="about-actions">
       <button class="btn-primary" onclick="openModal()">Rejoindre Nomade</button>
-      <button class="btn-secondary" onclick="location.href='contact.html'">Nous contacter</button>
+      <button class="btn-secondary" onclick="location.href='page-contact.html'">Nous contacter</button>
     </div>
   </div>
 </main>
