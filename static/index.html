@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nomade — Accueil</title>
+  <title>VulnApp — Accueil</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -22,9 +22,9 @@
 
 <main>
   <div class="hero">
-    <p class="hero-eyebrow">Bienvenue</p>
+    <p class="hero-eyebrow">Challenge Pentest</p>
     <h1>Un espace pensé<br>pour <em>aller loin</em></h1>
-    <p>Nomade vous accompagne dans chaque étape. Simple, honnête, sans superflu.</p>
+    <p>VulnApp vous accompagne dans chaque étape. Simple, honnête, et (presque) sécurisé.</p>
     <div class="hero-actions">
       <button class="btn-primary" id="heroSignupBtn">Créer un compte</button>
       <button class="btn-secondary" onclick="location.href='page-about.html'">En savoir plus</button>
@@ -37,12 +37,12 @@
     <div class="feature-card">
       <div class="feature-icon">◈</div>
       <h3>Simple à prendre en main</h3>
-      <p>Une interface claire, sans options cachées.</p>
+      <p>Une interface claire, parfaite pour une démonstration.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">◎</div>
-      <h3>Sécurisé par défaut</h3>
-      <p>Vos données restent vos données.</p>
+      <h3>Failles intégrées</h3>
+      <p>Trouvez les vulnérabilités cachées dans le système.</p>
     </div>
   </div>
 </main>
@@ -65,15 +65,16 @@
                 <button class="btn-back" id="backToHomeFromLogin">←</button>
                 <h2 class="modal-form-title">Connexion</h2>
             </div>
-            <form action="/login" method="POST">
+            <form id="loginForm">
                 <div class="modal-field">
-                    <label>Email ou Identifiant</label>
-                    <input type="text" name="username" placeholder="admin@vulnapp.local">
+                    <label>Nom d'utilisateur</label>
+                    <input type="text" id="loginUsername" placeholder="alice" required>
                 </div>
                 <div class="modal-field">
                     <label>Mot de passe</label>
-                    <input type="password" name="password" placeholder="••••••••">
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
                 </div>
+                <div class="modal-error" id="loginMsg" style="font-weight: 500; margin-bottom: 10px;"></div>
                 <button type="submit" class="btn-modal-submit">Entrer</button>
             </form>
         </div>
@@ -83,23 +84,22 @@
                 <button class="btn-back" id="backToHomeFromSignup">←</button>
                 <h2 class="modal-form-title">Créer un compte</h2>
             </div>
-            <form action="/register" method="POST">
+            <form id="signupForm">
                 <div class="modal-field">
-                    <label>Nom complet</label>
-                    <input type="text" name="fullname" placeholder="John Doe">
-                </div>
-                <div class="modal-field">
-                    <label>Email</label>
-                    <input type="email" name="email" placeholder="john@example.com">
+                    <label>Nom d'utilisateur</label>
+                    <input type="text" id="signupUsername" placeholder="bob" required>
                 </div>
                 <div class="modal-field">
                     <label>Mot de passe</label>
-                    <input type="password" name="password" placeholder="••••••••">
+                    <input type="password" id="signupPassword" placeholder="••••••••" required>
                 </div>
                 <div class="pw-rules">
-                    <span class="pw-rule">8+ caractères</span>
-                    <span class="pw-rule">1 spécial</span>
+                    <span class="pw-rule">Majuscule</span>
+                    <span class="pw-rule">Minuscule</span>
+                    <span class="pw-rule">Chiffre</span>
+                    <span class="pw-rule">Spécial</span>
                 </div>
+                <div class="modal-error" id="signupMsg" style="font-weight: 500; margin-bottom: 10px;"></div>
                 <button type="submit" class="btn-modal-submit">S'inscrire</button>
             </form>
         </div>
@@ -108,75 +108,150 @@
 </div>
 
 <script>
-    // Éléments principaux
+    // --- 1. SÉLECTION DES ÉLÉMENTS ---
     const modalOverlay = document.getElementById('modalOverlay');
     const modalBox = document.getElementById('loginModal');
     const loginBtnNav = document.getElementById('loginBtn');
     const signupBtnHero = document.getElementById('heroSignupBtn');
     const closeModal = document.getElementById('closeModal');
-
-    // Vues (Wrappers)
+    
     const modalHome = document.getElementById('modalHome');
     const loginFormWrap = document.getElementById('loginFormWrap');
     const signupFormWrap = document.getElementById('signupFormWrap');
-
-    // Boutons de navigation interne
+    
     const showLoginForm = document.getElementById('showLoginForm');
     const showSignupForm = document.getElementById('showSignupForm');
     const backToHomeFromLogin = document.getElementById('backToHomeFromLogin');
     const backToHomeFromSignup = document.getElementById('backToHomeFromSignup');
 
-    // --- FONCTIONS ---
-
+    // --- 2. GESTION DE L'AFFICHAGE ---
     function openModal(view = 'home') {
         modalOverlay.classList.add('open');
         resetViews();
-        if(view === 'home') {
-            modalHome.style.display = 'block';
+        if(view === 'home') { 
+            modalHome.style.display = 'block'; 
         } else if(view === 'signup') {
             modalHome.style.display = 'none';
             signupFormWrap.classList.add('active');
             modalBox.classList.add('expanded-signup');
         }
     }
-
+    
     function resetViews() {
         modalHome.style.display = 'block';
         loginFormWrap.classList.remove('active');
         signupFormWrap.classList.remove('active');
         modalBox.classList.remove('expanded-login', 'expanded-signup');
+        document.getElementById('loginMsg').innerText = "";
+        document.getElementById('signupMsg').innerText = "";
     }
 
-    // --- EVENEMENTS ---
-
-    // Ouvrir depuis la Nav (Accueil modale)
-    loginBtnNav.onclick = () => openModal('home');
-
-    // Ouvrir depuis le Hero (Directement inscription)
-    signupBtnHero.onclick = () => openModal('signup');
-
-    // Fermer
-    closeModal.onclick = () => modalOverlay.classList.remove('open');
+    // Écouteurs de clics pour ouvrir/fermer
+    if(loginBtnNav) loginBtnNav.onclick = () => openModal('home');
+    if(signupBtnHero) signupBtnHero.onclick = () => openModal('signup');
+    if(closeModal) closeModal.onclick = () => modalOverlay.classList.remove('open');
     window.onclick = (e) => { if (e.target == modalOverlay) modalOverlay.classList.remove('open'); };
-
-    // Aller vers Connexion
+    
+    // Navigation interne modale
     showLoginForm.onclick = () => {
         modalHome.style.display = 'none';
         loginFormWrap.classList.add('active');
         modalBox.classList.add('expanded-login');
     };
-
-    // Aller vers Inscription
+    
     showSignupForm.onclick = () => {
         modalHome.style.display = 'none';
         signupFormWrap.classList.add('active');
         modalBox.classList.add('expanded-signup');
     };
-
-    // Retours
+    
     backToHomeFromLogin.onclick = resetViews;
     backToHomeFromSignup.onclick = resetViews;
 
+
+    // --- 3. COMMUNICATION AVEC LE SERVEUR GO (JSON) ---
+
+    // Gérer la soumission du formulaire d'Inscription
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault(); // Empêche la page de se recharger
+        
+        const user = document.getElementById('signupUsername').value;
+        const pass = document.getElementById('signupPassword').value;
+        const msgDiv = document.getElementById('signupMsg');
+        const btn = e.target.querySelector('button');
+
+        btn.disabled = true;
+        btn.innerText = "Chargement...";
+
+        try {
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                msgDiv.style.color = "#7ecfaa"; // Vert CSS
+                msgDiv.innerText = data.message;
+                
+                // Redirection auto vers l'accueil de la modale après 1.5s
+                setTimeout(() => {
+                    backToHomeFromSignup.click();
+                    showLoginForm.click();
+                }, 1500);
+            } else {
+                msgDiv.style.color = "#e87c7c"; // Rouge CSS
+                msgDiv.innerText = data.message;
+            }
+        } catch (error) {
+            msgDiv.style.color = "#e87c7c";
+            msgDiv.innerText = "Erreur de connexion au serveur.";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "S'inscrire";
+        }
+    });
+
+    // Gérer la soumission du formulaire de Connexion
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const user = document.getElementById('loginUsername').value;
+        const pass = document.getElementById('loginPassword').value;
+        const msgDiv = document.getElementById('loginMsg');
+        const btn = e.target.querySelector('button');
+
+        btn.disabled = true;
+        btn.innerText = "Chargement...";
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                msgDiv.style.color = "#7ecfaa";
+                msgDiv.innerText = data.message;
+                
+                // Pour l'instant on affiche juste le succès. 
+                // Plus tard : window.location.href = "/admin";
+            } else {
+                msgDiv.style.color = "#e87c7c";
+                msgDiv.innerText = data.message;
+            }
+        } catch (error) {
+            msgDiv.style.color = "#e87c7c";
+            msgDiv.innerText = "Erreur de connexion au serveur.";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Entrer";
+        }
+    });
 </script>
+
 </body>
 </html>
