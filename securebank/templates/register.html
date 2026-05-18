@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureBank – Open an Account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="auth-page">
+
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="/" class="navbar__logo">
+        <div class="navbar__logo-icon">🏦</div>
+        <div class="navbar__logo-text">Secure<span>Bank</span></div>
+      </a>
+      <div class="navbar__links">
+        <a href="/about">About</a>
+        <a href="/register" class="active">Open account</a>
+        <a href="/login">Sign in</a>
+      </div>
+      <button class="navbar__burger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="auth-body">
+    <div class="auth-split">
+
+      <!-- Left – brand panel -->
+      <div class="auth-panel-left">
+        <div class="hero-logo">
+          <div class="hero-logo-icon">🏦</div>
+          <div class="hero-logo-text">Secure<span>Bank</span></div>
+        </div>
+
+        <p class="hero-tagline">
+          Join thousands of<br />
+          <em>satisfied customers.</em>
+        </p>
+
+        <ul class="hero-features">
+          <li><div class="hero-check">✓</div> Free current account</li>
+          <li><div class="hero-check">✓</div> Instant online access</li>
+          <li><div class="hero-check">✓</div> No monthly fees</li>
+          <li><div class="hero-check">✓</div> Secure from day one</li>
+        </ul>
+      </div>
+
+      <!-- Right – form -->
+      <div class="auth-panel-right">
+        <h2>Create your account</h2>
+        <p class="auth-subtitle">It only takes a few seconds</p>
+
+        {{if .Error}}
+        <div class="alert alert-error">
+          <span class="alert-icon">⚠</span>
+          {{.Error}}
+        </div>
+        {{end}}
+
+        <form method="POST" action="/register" class="auth-form" novalidate>
+
+          <div class="field" data-required>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username"
+                   placeholder="Choose a username"
+                   autocomplete="username" />
+            <span class="field-error">Username is required.</span>
+          </div>
+
+          <div class="field" data-required>
+            <label for="password">Password</label>
+            <div class="field-password-wrap">
+              <input type="password" id="password" name="password"
+                     placeholder="Choose a password"
+                     autocomplete="new-password" />
+              <span class="toggle-pw" role="button" tabindex="0" aria-label="Toggle password visibility">Show</span>
+            </div>
+            <span class="field-error">Password is required.</span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full btn-lg">
+            Sign Up →
+          </button>
+        </form>
+
+        <p class="auth-footer-link">
+          Already have an account?
+          <a href="/login">Sign in</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>© 2025 SecureBank S.A. &nbsp;·&nbsp; <a href="/about">About</a> &nbsp;·&nbsp; All rights reserved.</p>
+  </footer>
+
+  <script src="/static/main.js"></script>
+</body>
+</html>

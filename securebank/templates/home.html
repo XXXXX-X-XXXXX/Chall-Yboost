@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureBank – Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="dashboard-page">
+
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="/" class="navbar__logo">
+        <div class="navbar__logo-icon">🏦</div>
+        <div class="navbar__logo-text">Secure<span>Bank</span></div>
+      </a>
+      <div class="navbar__links">
+        <a href="/" class="active">Dashboard</a>
+        <a href="/about">About</a>
+        <a href="/logout" class="btn btn-outline btn-sm">Logout</a>
+      </div>
+      <button class="navbar__burger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+
+    <!-- Welcome banner -->
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <h1>Welcome to SecureBank</h1>
+        <p>Good to see you, <strong>{{.Username}}</strong>
+          {{if eq .Role "admin"}}<span class="badge badge-admin">Admin</span>{{end}}
+        </p>
+      </div>
+      <div class="welcome-icon">🏛️</div>
+    </div>
+
+    <!-- Dashboard grid -->
+    <div class="dash-grid">
+
+      <!-- Account summary card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-icon">💳</div>
+          <span class="card-header-title">Account Summary</span>
+        </div>
+        <div class="account-number">{{.AccountNumber}}</div>
+        <p class="balance-label">Available Balance</p>
+        <p class="balance">{{.Balance}}</p>
+        <p class="balance-trend">↑ +3,200.00 € this month</p>
+      </div>
+
+      <!-- Bank owner card
+           ⚠️ INFORMATION DISCLOSURE:
+           The owner's full name is intentionally displayed here.
+           "John Smith" → username candidates: jsmith, john.smith, johnsmith, admin
+           This simulates a real-world recon finding that helps an attacker
+           guess the admin username before launching a brute-force attack. -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-icon">🏢</div>
+          <span class="card-header-title">Branch Manager</span>
+        </div>
+        <div class="owner-card-inner">
+          <div class="owner-avatar">JS</div>
+          <div>
+            <p class="owner-name">{{.BankOwner}}</p>
+            <p class="owner-role">Paris – Opéra Branch</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account details card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-icon">📋</div>
+          <span class="card-header-title">Account Details</span>
+        </div>
+        <ul class="info-list">
+          <li>
+            <span class="info-key">Account type</span>
+            <span class="info-val">Current</span>
+          </li>
+          <li>
+            <span class="info-key">Branch</span>
+            <span class="info-val">Paris Opéra</span>
+          </li>
+          <li>
+            <span class="info-key">SWIFT / BIC</span>
+            <span class="info-val">SECBFRPP</span>
+          </li>
+          <li>
+            <span class="info-key">Support</span>
+            <span class="info-val">support@securebank.local</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Transactions – full width -->
+      <div class="card card-wide">
+        <div class="card-header">
+          <div class="card-header-icon">🔄</div>
+          <span class="card-header-title">Recent Transactions</span>
+        </div>
+        <table class="tx-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th class="tx-amount">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>10 Jun 2025</td>
+              <td>Salary – ACME Corp</td>
+              <td>Income</td>
+              <td><span class="tx-badge tx-badge-completed">Completed</span></td>
+              <td class="tx-amount tx-credit">+3 200.00 €</td>
+            </tr>
+            <tr>
+              <td>08 Jun 2025</td>
+              <td>EDF Electricity Bill</td>
+              <td>Utilities</td>
+              <td><span class="tx-badge tx-badge-completed">Completed</span></td>
+              <td class="tx-amount tx-debit">−95.40 €</td>
+            </tr>
+            <tr>
+              <td>05 Jun 2025</td>
+              <td>Amazon – Online Shopping</td>
+              <td>Shopping</td>
+              <td><span class="tx-badge tx-badge-completed">Completed</span></td>
+              <td class="tx-amount tx-debit">−142.90 €</td>
+            </tr>
+            <tr>
+              <td>01 Jun 2025</td>
+              <td>Rent Transfer – Landlord</td>
+              <td>Housing</td>
+              <td><span class="tx-badge tx-badge-completed">Completed</span></td>
+              <td class="tx-amount tx-debit">−850.00 €</td>
+            </tr>
+            <tr>
+              <td>28 May 2025</td>
+              <td>International Wire – Pending</td>
+              <td>Transfer</td>
+              <td><span class="tx-badge tx-badge-pending">Pending</span></td>
+              <td class="tx-amount tx-debit">−500.00 €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /dash-grid -->
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2025 SecureBank S.A. &nbsp;·&nbsp; <a href="/about">About</a> &nbsp;·&nbsp; All rights reserved.</p>
+  </footer>
+
+  <script src="/static/main.js"></script>
+</body>
+</html>
