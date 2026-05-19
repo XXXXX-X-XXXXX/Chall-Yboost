@@ -1,7 +1,7 @@
 /* =============================================================
-   SecureBank — style.css
+   SecureBank â€” style.css
    Design: modern retail banking (clean, trustworthy, minimal)
-   Palette: navy #0f2d52 · teal accent #00a896 · warm-white bg
+   Palette: navy #0f2d52 Â· teal accent #00a896 Â· warm-white bg
    ============================================================= */
 
 :root {
@@ -373,7 +373,7 @@ h1,h2,h3,h4{line-height:1.3;color:var(--navy)}
   font-size:.875rem;color:var(--slate);
   display:flex;align-items:center;gap:.5rem;
 }
-.about-card ul li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0}
+.about-card ul li::before{content:'âœ“';color:var(--teal);font-weight:700;flex-shrink:0}
 
 /* ---- FOOTER ---- */
 .site-footer{
